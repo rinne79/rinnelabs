@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+:root {
+  --sage-50: #f6f7f5;
+  --sage-100: #e8ebe5;
+  --sage-200: #d1d7cb;
+  --sage-300: #b0baa5;
+  --sage-400: #8a9a7b;
+  --sage-500: #6b7d5e;
+  --sage-600: #546449;
+  --sage-700: #434f3b;
+  --sage-800: #384132;
+  --sage-900: #2f362b;
+
+  --warm-50: #faf9f7;
+  --warm-100: #f0eeea;
+  --warm-200: #e2dfd8;
+  --warm-300: #ccc7bc;
+  --warm-400: #b0a898;
+  --warm-500: #968c7a;
+
+  --rose-soft: #e8c4c0;
+  --sky-soft: #bdd4de;
+  --amber-soft: #e8d5a8;
+  --lavender-soft: #c9c0d9;
+  --mint-soft: #b8d8c8;
+
+  --background: var(--warm-50);
+  --foreground: var(--sage-900);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-sage-50: var(--sage-50);
+  --color-sage-100: var(--sage-100);
+  --color-sage-200: var(--sage-200);
+  --color-sage-300: var(--sage-300);
+  --color-sage-400: var(--sage-400);
+  --color-sage-500: var(--sage-500);
+  --color-sage-600: var(--sage-600);
+  --color-sage-700: var(--sage-700);
+  --color-sage-800: var(--sage-800);
+  --color-sage-900: var(--sage-900);
+  --color-warm-50: var(--warm-50);
+  --color-warm-100: var(--warm-100);
+  --color-warm-200: var(--warm-200);
+  --color-warm-300: var(--warm-300);
+  --color-warm-400: var(--warm-400);
+  --color-warm-500: var(--warm-500);
+  --color-rose-soft: var(--rose-soft);
+  --color-sky-soft: var(--sky-soft);
+  --color-amber-soft: var(--amber-soft);
+  --color-lavender-soft: var(--lavender-soft);
+  --color-mint-soft: var(--mint-soft);
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    sans-serif;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    sans-serif;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+@keyframes gentle-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 1.5s ease-out infinite;
+}
+
+.animate-gentle-bounce {
+  animation: gentle-bounce 2s ease-in-out infinite;
+}
