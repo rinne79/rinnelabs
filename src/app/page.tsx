@@ -81,10 +81,9 @@ export default function Home() {
 
   const handleToggleRecording = useCallback(() => {
     if (isRecording) {
-      const finalTranscript = stopRecording();
-      if (finalTranscript.trim()) {
-        processTranscript(finalTranscript);
-      }
+      stopRecording((text) => {
+        processTranscript(text);
+      });
     } else {
       setError(null);
       startRecording();

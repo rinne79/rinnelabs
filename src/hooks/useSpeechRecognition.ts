@@ -35,13 +35,14 @@ export function useSpeechRecognition() {
   const [isSupported, setIsSupported] = useState(true);
   const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
   const finalTranscriptRef = useRef("");
+  const transcriptRef = useRef("");
+  const onStopCallbackRef = useRef<((text: string) => void) | null>(null);
 
   useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      !("SpeechRecognition" in window) &&
-      !("webkitSpeechRecognition" in window)
-    ) {
+    if (typeof window === "undefined") return;
+    const hasSpeech =
+      "SpeechRecognition" in window || "webkitSpeechRecognition" in window;
+    if (!hasSpeech) {
       setIsSupported(false);
     }
   }, []);
@@ -62,6 +63,7 @@ export function useSpeechRecognition() {
     recognition.lang = "en-AU";
 
     finalTranscriptRef.current = "";
+    transcriptRef.current = "";
     setTranscript("");
 
     recognition.onresult = (event: SpeechRecognitionEvent) => {
@@ -74,37 +76,64 @@ export function useSpeechRecognition() {
           interim += result[0].transcript;
         }
       }
-      setTranscript(finalTranscriptRef.current + interim);
+      const full = finalTranscriptRef.current + interim;
+      transcriptRef.current = full;
+      setTranscript(full);
     };
 
     recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
       console.error("Speech recognition error:", event.error);
-      if (event.error !== "aborted") {
-        setIsRecording(false);
-      }
+      setIsRecording(false);
     };
 
     recognition.onend = () => {
       setIsRecording(false);
+      // When recognition ends after stop(), fire the callback with final text
+      if (onStopCallbackRef.current) {
+        const cb = onStopCallbackRef.current;
+        onStopCallbackRef.current = null;
+        const text = transcriptRef.current;
+        if (text.trim()) {
+          cb(text);
+        }
+      }
     };
 
     recognitionRef.current = recognition;
-    recognition.start();
-    setIsRecording(true);
+
+    try {
+      recognition.start();
+      setIsRecording(true);
+    } catch (err) {
+      console.error("Failed to start speech recognition:", err);
+      setIsRecording(false);
+    }
   }, []);
 
-  const stopRecording = useCallback((): string => {
+  const stopRecording = useCallback((onComplete?: (text: string) => void) => {
+    if (onComplete) {
+      onStopCallbackRef.current = onComplete;
+    }
     if (recognitionRef.current) {
       recognitionRef.current.stop();
       recognitionRef.current = null;
+    } else {
+      // If recognition already stopped, fire callback immediately
+      setIsRecording(false);
+      if (onComplete) {
+        onStopCallbackRef.current = null;
+        const text = transcriptRef.current;
+        if (text.trim()) {
+          onComplete(text);
+        }
+      }
     }
-    setIsRecording(false);
-    return transcript;
-  }, [transcript]);
+  }, []);
 
   const resetTranscript = useCallback(() => {
     setTranscript("");
     finalTranscriptRef.current = "";
+    transcriptRef.current = "";
   }, []);
 
   return {
