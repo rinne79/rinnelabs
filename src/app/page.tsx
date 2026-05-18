@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
 import RecordButton from "@/components/RecordButton";
 import TranscriptDisplay from "@/components/TranscriptDisplay";
 import TaskList from "@/components/TaskList";
@@ -111,7 +112,13 @@ export default function Home() {
   return (
     <main className="flex-1 flex flex-col">
       {/* Header */}
-      <header className="pt-12 pb-6 px-6 text-center">
+      <header className="pt-12 pb-6 px-6 text-center relative">
+        <Link
+          href="/baby"
+          className="absolute right-4 top-12 text-xs text-sage-400 hover:text-sage-600"
+        >
+          baby food →
+        </Link>
         <h1 className="text-2xl font-semibold text-sage-800 tracking-tight">
           Brain Dump
         </h1>
